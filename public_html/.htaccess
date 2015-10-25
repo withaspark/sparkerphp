@@ -1,0 +1,9 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine On
+
+   # Serve all requests from index.php except site assets
+   RewriteCond %{REQUEST_URI} !^/index.php
+   RewriteCond %{REQUEST_URI} !^/assets
+   RewriteCond %{REQUEST_URI} !^/.*/assets
+   RewriteRule (.*) index.php?r=$1 [L,QSA]
+</IfModule>
