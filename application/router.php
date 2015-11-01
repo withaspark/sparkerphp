@@ -1,16 +1,21 @@
 <?php
+require_once('inputs.php');
+
 class Router
 {
+	protected $inputs = null; // Pointer to inputs instance
+
 	private $m_sRoute = ''; // Holds the route name
 	private $m_sMethod = ''; // Method called
 	private $m_sView = ''; // Path of view to render
-	private $m_Params = array(); // Array of $_GET, $_POST
+	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message
 	private $m_Data = array(); // Array of key-value substitutions used to push data into views
 
 
 	public function __construct() {
 		// Route is difference between this class and parent class names
 		$this->m_sRoute = strtolower(str_replace(get_parent_class($this), '', get_class($this)));
+		$this->inputs = Inputs::getInstance();
 	}
 
 	/**
@@ -18,17 +23,22 @@ class Router
 	 *
 	 * @return  void
 	 */
-	protected function preload() {
-		$this->addData('title', __APPTITLE__);
-		$this->addData('approot', __APPPATH__);
-		$this->addData('route', $this->m_sRoute);
-		$this->addData('method', $this->m_sMethod);
-	}
+	protected function preload() { }
 	
 	/**
 	 * Actions to perform after running controller method
 	 */
-	protected function postload() { }
+	protected function postload() {
+		// Add all messages to the view
+		$messages = array('error' => array(), 'message' => array());
+		$msgs = $this->getMessages();
+		foreach ($msgs as $msg) {
+			if ($msg[0] == 'error' || $msg[0] == 'message')
+				$messages[$msg[0]][] = $msg[1];
+		}
+		$this->addData('errorMessages', $messages['error']);
+		$this->addData('messageMessages', $messages['message']);
+	}
 
 	/**
 	 * Gets all substitutions for the page as array
@@ -55,16 +65,14 @@ class Router
 	 *
 	 * @param   $method   string   method to call
 	 * @param   $args     array    arguments to pass to method
-	 * @param   $params   array    sanitized $_POST, $_GET key-value pairs
 	 * @return  bool
 	 */
-	public function callMethod($method, $args, $params) {
+	public function callMethod($method, $args) {
 		$methodExists = false;
 
 		if (method_exists($this, $method)) {
 			$methodExists = true;
 			$this->m_sMethod = $method;
-			$this->m_Params = $params;
 
 			$this->setView($this->m_sRoute.'/'.$this->m_sMethod);
 			$this->preload();
@@ -122,6 +130,26 @@ class Router
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Adds an error or message type message to be displayed.
+	 * Note: Messages do not bubble up to the application class.
+	 *
+	 * @param   string   $message   Message to be displayed to user
+	 * @param   string   $class     Type of message to be added: error, message
+	 */
+	public function addMessage($message, $class = 'message') {
+		$this->m_Messages[] = array($class, $message);
+	}
+
+	/**
+	 * Gets all messages that need to be sent to the user.
+	 *
+	 * @return  array        Array of all array(type, message)
+	 */
+	public function getMessages() {
+		return $this->m_Messages;
 	}
 }
 ?>

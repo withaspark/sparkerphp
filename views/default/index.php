@@ -7,7 +7,65 @@ applications.</p>
 <a href='http://withaspark.com/sparkerphp/'>http://withaspark.com/sparkerphp/</a>.
 </p>
 
+<h2>Test</h2>
+
+<p>Input a valid hexadecimal ID and URL, or don't.
+</p>
+<form method="POST" action=".">
+	<input type="text" name="links--id" placeholder="Link ID" value="{$links--id}">
+	<input type="text" name="links--link" placeholder="Link URL" value="{$links--link}">
+	<input type="submit" value="Submit!">
+</form>
+
+<hr>
+
 <h2>Examples</h2>
+
+<h3>User Input Sanitization</h3>
+
+<p>SparkerPHP attempts to ensure only sanitized inputs are ever used by the
+application. To do so, the $_GET, $_POST, $_SESSION, and $_COOKIE globals are
+unset automatically and must be retrieved through the router.
+</p>
+
+<h4>Defining a Schema</h4>
+<p>The application data schema is defined using the JSON schema definition file
+located at
+</p>
+<code>/config/schema.json</code>
+
+<h4>Fetching Inputs</h4>
+<p>In the router class,
+the globals
+</p>
+<code>$_POST['somepost'];
+$_GET['someget'];
+$_SESSION['somesession'];
+$_COOKIE['somecookie'];
+</code>
+<p>can be read by:
+</p>
+<code>$this-&gt;inputs-&gt;post('somepost');
+$this-&gt;inputs-&gt;get('someget');
+$this-&gt;inputs-&gt;session('somesession');
+$this-&gt;inputs-&gt;cookie('somecookie');
+</code>
+
+<h4>Input Validity Test</h4>
+<p>To test that the data input was valid, the validity can be recovered and
+used to determine flow of logic.
+</p>
+<code>$this-&gt;inputs-&gt;isClean('post', 'somepost');
+</code>
+
+<h4>Input Error Feedback</h4>
+<p>In the event the value is invalid, the error message can be recovered and
+used to give the user feedback regarding the failure.
+</p>
+<code>$this-&gt;inputs-&gt;getError('post', 'somepost');
+</code>
+
+
 
 <h3>Using Templates</h3>
 
@@ -64,3 +122,5 @@ And you would get the result
 
 <code><?php foreach ($myarr as $el) echo $el; ?>
 </code>
+
+<hr>

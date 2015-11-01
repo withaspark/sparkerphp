@@ -4,11 +4,16 @@ if (!isset($_GET['r'])) {
 	echo '<h3>Error: Invalid .htaccess.</h3><p>I can\'t find the request query.</p>';
 }
 else {
+	if (file_exists('../config/config.php'))
+		require_once('../config/config.php');
 	require_once('../application/config.php');
 	require_once('../application/sparkerphp.php');
 
 	$req = preg_replace('/[^a-zA-Z0-9\-_\.\/]/', '', $_GET['r']);
-	$sparkerphp = new SparkerPHP($req);
+	unset($_GET['r']);
+
+	$sparkerphp = SparkerPHP::getInstance();
+	$sparkerphp->start($req);
 	echo $sparkerphp->render();
 }
 

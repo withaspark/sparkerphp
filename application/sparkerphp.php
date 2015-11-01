@@ -1,29 +1,52 @@
 <?php
 require_once('router.php');
+require_once('inputs.php');
+require_once('outputHelper.php');
 
 class SparkerPHP
 {
+	public $inputs = null; // Pointer to inputs object
+
 	private $m_sRoute = ''; // Route string
 	private $m_sMethod = ''; // Method string
 	private $m_sArgs = array(); // Array of arguments
 	private $m_sRequires = array(); // Array of file paths that need to be included
-	private $m_sMessages = array(); // Array of messages to be displayed (errors, warnings, etc.)
+	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message
 
-	private $m_Params = array(); // Array of $_GET, $_POST
 	private $m_Data = array(); // Data to display in view
 
 	private $m_pRouter = null; // Pointer to router object
 	private $m_pView = null; // Pointer to view object
 
+	private static $m_instance = null; // Pointer to this instance
 
-	public function __construct($request) {
+
+
+	private function __construct() {
 		$this->m_iStartTime = microtime(true);
-		$this->getRoute($request);
-		$this->processParams();
-		$this->loadRouter();
+		$this->inputs = Inputs::getInstance();
 	}
 
 	public function __destruct() { }
+
+	public static function getInstance() {
+		if (!self::$m_instance)
+			self::$m_instance = new SparkerPHP();
+		return self::$m_instance;
+	}
+
+	/**
+	 * Starts routing
+	 */
+	public function start($request) {
+		$this->getRoute($request);
+		$this->loadRouter();
+
+		$this->addData('title', __APPTITLE__);
+		$this->addData('approot', __APPPATH__);
+		$this->addData('route', $this->m_sRoute);
+		$this->addData('method', $this->m_sMethod);
+	}
 
 	/**
 	 * Extracts the route/method[/param1/param2..] from the request.
@@ -51,7 +74,7 @@ class SparkerPHP
 			$approute = ucwords($this->m_sRoute) . 'Router';
 			$this->m_pRouter = new $approute();
 			unset($approute);
-			if ($this->m_pRouter->callMethod($this->m_sMethod, $this->m_sArgs, $this->m_Params)) {
+			if ($this->m_pRouter->callMethod($this->m_sMethod, $this->m_sArgs)) {
 				// Add all router data to app data
 				foreach ($this->m_pRouter->getData() as $k => $v) {
 					$this->addData($k, $v);
@@ -69,42 +92,25 @@ class SparkerPHP
 	}
 
 	/**
-	 * Loads all sanitized $_GET and $_POST parameters into the application object and makes
-	 * global $_GET and $_POST unavailable so don't accidentally use dirty value.
-	 */
-	private function processParams() {
-		// Note: this stomps key, keep gets before posts
-		foreach ($_GET as $k => $v) {
-			//TODO: add validation here where name of input is queried against the sanitization
-			// routine lookup and only adding if valid
-			$this->m_Params[$k] = $v;
-		}
-		foreach ($_POST as $k => $v) {
-			//TODO: add validation here where name of input is queried against the sanitization
-			// routine lookup and only adding if valid
-			$this->m_Params[$k] = $v;
-		}
-		// Unset $_GET and $_POST so only used sanitized values
-		unset($_GET);
-		unset($_POST);
-	}
-
-	/**
 	 * Builds the application view object with header, footer, and view.
 	 */
 	public function loadView($page = null) {
 		// If called without a page, call router's view
-		if ($page === null)
+		if ($page == null && $this->m_pRouter)
 			$page = $this->m_pRouter->getView();
+		else if ($page == null)
+			$page = '404';
 
 		// If view exists, render template and view
 	        if ($this->addRequire('../views/header.php')
 	         && $this->addRequire("../views/$page.php")
 	         && $this->addRequire('../views/footer.php')) {
 			$this->m_pView = $this->parseView('../views/header.php', $this->getData());
-			// Add all error and message boxes
-			foreach ($this->getMessages() as $message) {
-				$this->m_pView .= "\n".'<div class="'.$message[0].'_box">'.ucwords($message[0]).': '.$message[1].'</div>';
+			// Add all error and message boxes if in debug mode; if not, leave up to view
+			if (__DEBUG__) {
+				foreach ($this->getMessages() as $message) {
+					$this->m_pView .= "\n".'<div class="'.$message[0].'_box"><b>'.ucwords($message[0]).'</b>: '.ucfirst($message[1]).'</div>';
+				}
 			}
 			$this->m_pView .= "\n".$this->parseView("../views/$page.php", $this->getData())
 					.$this->parseView('../views/footer.php', $this->getData());
@@ -137,23 +143,37 @@ class SparkerPHP
 	/**
 	 * Gets all messages that need to be sent to the user.
 	 *
-	 * @return  array
+	 * @return  array        Array of all array(type, message)
 	 */
 	public function getMessages() {
-		return $this->m_sMessages;
+		return $this->m_Messages;
 	}
 
 	/**
-	 * Adds an error or feedback message to be displayed.
+	 * Adds an error or message type message to be displayed.
+	 *
+	 * @param   string   $message   Message to be displayed to user
+	 * @param   string   $class     Type of message to be added: error, message
 	 */
-	public function addMessage($message, $class = 'feedback') {
-		$this->m_sMessages[] = array($class, $message);
+	public function addMessage($message, $class = 'message') {
+		$this->m_Messages[] = array($class, $message);
 	}
 
+	/**
+	 * Gets all file paths that must be included
+	 *
+	 * @return   array          Array of all required files to be included
+	 */
 	public function getRequires() {
 		return $this->m_sRequires;
 	}
 
+	/**
+	 * Adds a file paths that must be included
+	 *
+	 * @param   string   $requiredFile   File path that must be included
+	 * @return  bool     $bExists        Does the required file exist
+	 */
 	public function addRequire($requiredFile) {
 		$bExists = false;
 		if (file_exists($requiredFile)) {
@@ -163,6 +183,9 @@ class SparkerPHP
 		return $bExists;
 	}
 
+	/**
+	 * Includes file paths that must be included and clears list of required files
+	 */
 	public function includeRequired() {
 		foreach ($this->getRequires() as $reqd) {
 			require_once($reqd);
@@ -202,6 +225,11 @@ class SparkerPHP
 		return $file_contents;
 	}
 
+	/**
+	 * Pieces together all view and returns a fully constructed view.
+	 *
+	 * @return   string    $this->m_pView   Fully constructed view ready for output to client
+	 */
 	public function render() {
 		$this->loadView();
 		return $this->m_pView;
