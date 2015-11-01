@@ -11,7 +11,7 @@ applications.</p>
 
 <p>Input a valid hexadecimal ID and URL, or don't.
 </p>
-<form method="POST" action=".">
+<form method="POST" action="{$approot}default/edit">
 	<input type="text" name="links--id" placeholder="Link ID" value="{$links--id}">
 	<input type="text" name="links--link" placeholder="Link URL" value="{$links--link}">
 	<input type="submit" value="Submit!">

@@ -67,6 +67,38 @@ class Inputs
 	}
 
 	/**
+	 * Get if data is set
+	 *
+	 * @param    string   $type   post, get, session, cookie, etc.
+	 * @param    string   $param  name of variable
+	 * @return   bool             If value is set
+	 */
+	public function exists($type, $param) {
+		$bIsSet = false;
+		switch($type) {
+			case 'get':
+				if (array_key_exists($param, $this->m_Get))
+					$bIsSet = true;
+				break;
+			case 'post':
+				if (array_key_exists($param, $this->m_Post))
+					$bIsSet = true;
+				break;
+			case 'session':
+				if (array_key_exists($param, $this->m_Session))
+					$bIsSet = true;
+				break;
+			case 'cookie':
+				if (array_key_exists($param, $this->m_Cookie))
+					$bIsSet = true;
+				break;
+			default:
+				break;
+		}
+		return $bIsSet;
+	}
+
+	/**
 	 * Get if data is clean
 	 *
 	 * @param    string   $type   post, get, session, cookie, etc.
