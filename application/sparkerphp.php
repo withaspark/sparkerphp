@@ -11,7 +11,7 @@ class SparkerPHP
 	private $m_sMethod = ''; // Method string
 	private $m_sArgs = array(); // Array of arguments
 	private $m_sRequires = array(); // Array of file paths that need to be included
-	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message
+	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message, confirm
 
 	private $m_Data = array(); // Data to display in view
 

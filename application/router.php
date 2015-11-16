@@ -8,7 +8,7 @@ class Router
 	private $m_sRoute = ''; // Holds the route name
 	private $m_sMethod = ''; // Method called
 	private $m_sView = ''; // Path of view to render
-	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message
+	private $m_Messages = array(); // Array of messages to be displayed as (type, message) pairs where type is error, message, confirm
 	private $m_Data = array(); // Array of key-value substitutions used to push data into views
 
 
@@ -138,7 +138,7 @@ class Router
 	 * Note: Messages do not bubble up to the application class.
 	 *
 	 * @param   string   $message   Message to be displayed to user
-	 * @param   string   $class     Type of message to be added: error, message
+	 * @param   string   $class     Type of message to be added: error, message, confirm
 	 */
 	public function addMessage($message, $class = 'message') {
 		$this->m_Messages[] = array($class, $message);
