@@ -208,6 +208,17 @@ class Schema
 					'type'  => 'text',
 				),
 			),
+			'mac' => array(
+				'filter'      => '/([0-9a-fA-F]{2}[:]){5}([0-9a-fA-F]{2})/',
+				'negative'    => true,
+				'description' => 'xx:xx:xx:xx:xx',
+				'min_length'  => 17,
+				'max_length'  => 17,
+				'input' => array(
+					'label' => 'MAC address',
+					'type'  => 'text',
+				),
+			),
 			'url' => array(
 				'filter'      => '/[^a-zA-Z0-9_:\?\=\&\@\[\]\/\.\-\ ]/i',
 				'description' => 'valid url, e.g. http://www.example.com/page.html',
