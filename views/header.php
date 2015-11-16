@@ -18,4 +18,9 @@ if (isset($messageMessages)) {
 		echo "\n<div class='message_box'><b>Notice</b>: $msg</div>";
 	}
 }
+if (isset($confirmMessages)) {
+	foreach($confirmMessages as $msg) {
+		echo "\n<div class='confirm_box'><b>Success</b>: $msg</div>";
+	}
+}
 ?>

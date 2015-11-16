@@ -153,7 +153,7 @@ class SparkerPHP
 	 * Adds an error or message type message to be displayed.
 	 *
 	 * @param   string   $message   Message to be displayed to user
-	 * @param   string   $class     Type of message to be added: error, message
+	 * @param   string   $class     Type of message to be added: error, message, confirm
 	 */
 	public function addMessage($message, $class = 'message') {
 		$this->m_Messages[] = array($class, $message);

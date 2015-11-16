@@ -19,7 +19,7 @@ class DefaultRouter extends Router
 				$this->addMessage($this->inputs->getError('post', 'links--id'), 'error');
 			}
 			else {
-				$this->addMessage('Link ID set.');
+				$this->addMessage('Link ID set.', 'confirm');
 				$this->addData('links--id', $this->inputs->post('links--id'));
 			}
 		}
@@ -28,7 +28,7 @@ class DefaultRouter extends Router
 				$this->addMessage($this->inputs->getError('post', 'links--link'), 'error');
 			}
 			else {
-				$this->addMessage('Link URL set.');
+				$this->addMessage('Link URL set.', 'confirm');
 				$this->addData('links--link', $this->inputs->post('links--link'));
 			}
 		}

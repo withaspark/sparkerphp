@@ -30,14 +30,15 @@ class Router
 	 */
 	protected function postload() {
 		// Add all messages to the view
-		$messages = array('error' => array(), 'message' => array());
+		$messages = array('error' => array(), 'message' => array(), 'confirm' => array());
 		$msgs = $this->getMessages();
 		foreach ($msgs as $msg) {
-			if ($msg[0] == 'error' || $msg[0] == 'message')
+			if ($msg[0] == 'error' || $msg[0] == 'message' || $msg[0] == 'confirm')
 				$messages[$msg[0]][] = $msg[1];
 		}
 		$this->addData('errorMessages', $messages['error']);
 		$this->addData('messageMessages', $messages['message']);
+		$this->addData('confirmMessages', $messages['confirm']);
 	}
 
 	/**
