@@ -11,9 +11,11 @@ applications.</p>
 
 <p>Input a valid hexadecimal ID and URL, or don't.
 </p>
-<form method="POST" action="{$approot}default/edit">
+<form method="POST" action="{$approot}default/edit" enctype="multipart/form-data">
 	<input type="text" name="links--id" placeholder="Link ID" value="{$links--id}">
 	<input type="text" name="links--link" placeholder="Link URL" value="{$links--link}">
+	<input type="file" name="links--file[]" placeholder="File path" value="">
+	<input type="file" name="links--file[]" placeholder="File path" value="">
 	<input type="submit" value="Submit!">
 </form>
 
@@ -24,8 +26,8 @@ applications.</p>
 <h3>User Input Sanitization</h3>
 
 <p>SparkerPHP attempts to ensure only sanitized inputs are ever used by the
-application. To do so, the $_GET, $_POST, $_SESSION, and $_COOKIE globals are
-unset automatically and must be retrieved through the router.
+application. To do so, the $_GET, $_POST, $_SESSION, $_COOKIE, and $_FILES
+globals are unset automatically and must be retrieved through the router.
 </p>
 
 <h4>Defining a Schema</h4>
@@ -42,13 +44,15 @@ the globals
 $_GET['someget'];
 $_SESSION['somesession'];
 $_COOKIE['somecookie'];
+$_FILES['somefile'];
 </code>
-<p>can be read by:
+<p>can be read through:
 </p>
 <code>$this-&gt;inputs-&gt;post('somepost');
 $this-&gt;inputs-&gt;get('someget');
 $this-&gt;inputs-&gt;session('somesession');
 $this-&gt;inputs-&gt;cookie('somecookie');
+$this-&gt;inputs-&gt;file('somefile');
 </code>
 
 <h4>Input Validity Test</h4>

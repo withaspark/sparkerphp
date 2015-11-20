@@ -32,6 +32,28 @@ class DefaultRouter extends Router
 				$this->addData('links--link', $this->inputs->post('links--link'));
 			}
 		}
+		if ($this->inputs->exists('file', 'links--file-0')) {
+			if (!$this->inputs->isClean('file', 'links--file-0')) {
+				$this->addMessage($this->inputs->getError('file', 'links--file-0'), 'error');
+			}
+			else {
+				if ($this->inputs->file('links--file-0')->save())
+					$this->addMessage('File '.$this->inputs->file('links--file-0')->getFilename().' received.', 'confirm');
+				else
+					$this->addMessage('Couldn\'t save '.$this->inputs->file('links--file-0')->getFilename().'.', 'error');
+			}
+		}
+		if ($this->inputs->exists('file', 'links--file-1')) {
+			if (!$this->inputs->isClean('file', 'links--file-1')) {
+				$this->addMessage($this->inputs->getError('file', 'links--file-1'), 'error');
+			}
+			else {
+				if ($this->inputs->file('links--file-1')->save())
+					$this->addMessage('File '.$this->inputs->file('links--file-1')->getFilename().' received.', 'confirm');
+				else
+					$this->addMessage('Couldn\'t save '.$this->inputs->file('links--file-1')->getFilename().'.', 'error');
+			}
+		}
 
 		$this->setView('default/index');
 		$this->index();
