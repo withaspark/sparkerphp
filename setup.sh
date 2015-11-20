@@ -73,7 +73,7 @@ echo "Installing required software and packages ..."
 #
 if [[ ! -d "$UP_DIR" ]]; then
 	echo "Creating $UP_DIR directory ..."
-	mkdir "$UP_DIR"
+	mkdir -p "$UP_DIR"
 fi
 echo "Making $UP_DIR directory writable by application ..."
 sudo chgrp "$WS_GRP" "$UP_DIR"
