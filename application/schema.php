@@ -219,6 +219,16 @@ class Schema
 					'type'  => 'text',
 				),
 			),
+			'filename' => array(
+				'filter'      => '/[^a-zA-Z0-9_:\?\=\&\@\[\]\.\-\ ]/i',
+				'description' => 'valid filename, e.g. SomeFile_12345.images.zip',
+				'min_length'  => 0,
+				'max_length'  => 500,
+				'input' => array(
+					'label' => 'Filename',
+					'type'  => 'file',
+				),
+			),
 			'url' => array(
 				'filter'      => '/[^a-zA-Z0-9_:\?\=\&\@\[\]\/\.\-\ ]/i',
 				'description' => 'valid url, e.g. http://www.example.com/page.html',
