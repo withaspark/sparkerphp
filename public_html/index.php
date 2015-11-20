@@ -4,6 +4,7 @@ if (!isset($_GET['r'])) {
 	echo '<h3>Error: Invalid .htaccess.</h3><p>I can\'t find the request query.</p>';
 }
 else {
+	define('INCLUDES_OK', true);
 	if (file_exists('../config/config.php'))
 		require_once('../config/config.php');
 	require_once('../application/config.php');

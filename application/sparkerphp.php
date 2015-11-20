@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 require_once('router.php');
 require_once('inputs.php');
 require_once('outputHelper.php');

@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 class DefaultRouter extends Router
 {
 	public function __construct() {

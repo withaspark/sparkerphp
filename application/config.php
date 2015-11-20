@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 /**
  * Set global configuration options here
  */

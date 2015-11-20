@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 require_once('inputs.php');
 
 class Router

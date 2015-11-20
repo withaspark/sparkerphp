@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 
 class outputHelper
 {
@@ -178,7 +178,7 @@ class outputHelper
 	 * Turns text web addresses into links
 	 * 
 	 * @param    string    $text    text to convert links in
-	 * @access   public    static
+	 * @access   public
 	 * @return   string    $text
 	 */
 	public static function make_urls_links($text) {

@@ -1,4 +1,4 @@
-<?php
+<?php if (!defined('INCLUDES_OK')) die ('Invalid SparkerPHP configuration.');
 class DB {
 	private $m_db         = null;
 	private $m_sQuery     = '';
