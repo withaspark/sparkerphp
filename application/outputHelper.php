@@ -282,6 +282,50 @@ class outputHelper
 
 
 	/**
+	 * Converts sizes given in bytes to a human readable size always rounding up.
+	 * @param   integer   $iSize        Size in bytes
+	 * @param   integer   $iPrecision   Precision of output--number of decimal places, assumed positive
+	 * @return  string                  Human readable size
+	 */
+	public static function convertBytesToHuman($iSize, $iPrecision = 2) {
+		$sPrefixes = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+		$iFactor   = 1;
+		$sUnits    = 'B';
+		$iMult     = pow(10, abs($iPrecision));
+
+		for ($ii = sizeof($sPrefixes) - 1; $ii >= 0; $ii--) {
+			if ($sPrefixes[$ii] != '' && abs($iSize) > pow(1000, $ii)) {
+				$iFactor = pow(1000, $ii);
+				$sUnits  = $sPrefixes[$ii];
+				break;
+			}
+		}
+
+		// Always rounds up and contains $iPrecision number of decimal places
+		return sprintf("%01.{$iPrecision}f", (ceil(($iSize/$iFactor) * $iMult) / $iMult)) . $sUnits;
+	}
+
+
+
+	/**
+	 * Converts sizes given in human readable size to bytes
+	 * @param   string   $sSize   Human readable size
+	 * @return  mixed             Size in bytes or false if cannot convert
+	 */
+	public static function convertHumanSizeToBytes($sSize) {
+		$sUnits  = array('B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+		$fValue  = floatval($sSize);
+		$sUnit   = trim(str_replace($fValue, '', $sSize));
+		$iFactor = array_search($sUnit, $sUnits);
+		if ($iFactor === false)
+			return false;
+
+		return $fValue * pow(1000, $iFactor);
+	}
+
+
+
+	/**
 	 * Generates a select input for choosing timezone
 	 * 
 	 * @param    string   $selectName   Name for select
