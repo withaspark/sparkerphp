@@ -5,7 +5,7 @@ require_once('database.php');
 
 /**
  * Class that defines basic operations for simple ORM tasks when a class
- * reflects an existing database table. Stupid simple...use at own risk. To use
+ * reflects an existing database table. Stupid simple...use at own risk.
  */
 class TableBase {
 	protected $m_sTableName = ''; //!< Name of this table
@@ -111,7 +111,7 @@ class TableBase {
 		// Append update to query
 		$sQuery = 'UPDATE '. self::getTableName() . ' SET ' . $sQuery;
 
-		$db = new DB(); // Database object
+		$db = new DB();
 		return $db->update($sQuery, $sParams);
 	}
 
