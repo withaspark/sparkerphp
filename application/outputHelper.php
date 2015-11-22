@@ -355,5 +355,95 @@ class outputHelper
 
 		return $html;
 	}
+
+	/**
+	 * Converts hexidecimal IP address to IP dot notation.
+	 * @param   string   $xIP   Hexidecimal IP address
+	 * @return  string          IP dot notation formatted IP
+	 */
+	public static function HexToIp($xIP) {
+		$sIP = '';
+		
+		// Leading zeros will be dropped, so add them manually
+		$xIP = sprintf('%08x', hexdec($xIP));
+
+		// Break into 2 char pairs
+		$IPParts = str_split($xIP, 2);
+
+		foreach ($IPParts as $sPiece) {
+			if ($sIP != '')
+				$sIP .= '.';
+			$sIP .= hexdec($sPiece);
+		}
+
+		return $sIP;
+	}
+
+	/**
+	 * Converts IP dot notation IP address to hexidecimal.
+	 * @param   string   $sIP   IP dot notation formatted IP
+	 * @return  string          Hexidecimal IP address
+	 */
+	public static function IpToHex($sIP) {
+		$xIP = '';
+
+		// Break into dot groups
+		$IPParts = explode('.', $sIP);
+		if (count($IPParts) != 4)
+			throw new Exception("Invalid dot notation IP $sIP.");
+
+		foreach ($IPParts as $iPiece) {
+			if ($iPiece < 0 || $iPiece > 255)
+				throw new Exception("Invalid dot notation IP $sIP out of range.");
+			$xIP .= sprintf('%02x', $iPiece);
+		}
+
+		return $xIP;
+	}
+
+	/**
+	 * Converts hexidecimal MAC address to MAC colon notation.
+	 * @param   string   $xMAC  Hexidecimal MAC address
+	 * @return  string          MAC colon notation formatted MAC
+	 */
+	public static function HexToMac($xMac) {
+		$sMac = '';
+
+		// Leading zeros will be dropped, so add them manually
+		$xMac = sprintf('%012x', hexdec($xMac));
+
+		// Break into 2 char pairs
+		$MACParts = str_split($xMac, 2);
+
+		foreach ($MACParts as $sPiece) {
+			if ($sMac != '')
+				$sMac .= ':';
+			$sMac .= $sPiece;
+		}
+
+		return $sMac;
+	}
+
+	/**
+	 * Converts MAC colon notation to hexidecimal MAC address.
+	 * @param   string   $sMAC  MAC colon notation formatted MAC
+	 * @return  string          Hexidecimal MAC address
+	 */
+	public static function MacToHex($sMAC) {
+		$xMAC = '';
+
+		// Break into dot groups
+		$MACParts = explode(':', $sMAC);
+		if (count($MACParts) != 6)
+			throw new Exception("Invalid MAC colon notation MAC $sMAC.");
+
+		foreach ($MACParts as $xPiece) {
+			if ($xPiece < 0x00 || $xPiece > 0xff)
+				throw new Exception("Invalid MAC colon notation MAC $sMAC out of range.");
+			$xMAC .= sprintf('%02x', hexdec($xPiece));
+		}
+
+		return $xMAC;
+	}
 }
 ?>
