@@ -216,11 +216,12 @@ class SparkerPHP
 		foreach ($substitutions as $key => $sub) {
 			// Arrays and objects will have to be within php tags
 			if (!is_array($sub) && !is_object($sub))
-				$file_contents = preg_replace('/{\$'.$key.'}/', $sub, $file_contents);
+				$file_contents = str_replace("{\$$key}", $sub, $file_contents);
 		}
 
 		// If programmer forgot to set replacement content in router, give error
-		$file_contents = preg_replace('/{\$(.*?)}/', $undefined_message = '<div class=\'error_box\'>Error: Content for {$$1} was not set in view for '.$this->m_sRoute.'/'.$this->m_sMethod.'. You must call <code>$this->addData(\'$$1\', \'YOUR VALUE\');</code>somewhere in your router.</div>', $file_contents);
+		if (strpos($file_contents, '{$') !== false)
+			$file_contents = preg_replace('/{\$(.*?)}/', $undefined_message = '<div class=\'error_box\'>Error: Content for {$$1} was not set in view for '.$this->m_sRoute.'/'.$this->m_sMethod.'. You must call <code>$this->addData(\'$1\', \'YOUR VALUE\');</code>somewhere in your router.</div>', $file_contents);
 
 		return $file_contents;
 	}
