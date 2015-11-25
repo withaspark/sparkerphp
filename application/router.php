@@ -77,7 +77,7 @@ class Router
 
 			$this->setView($this->m_sRoute.'/'.$this->m_sMethod);
 			$this->preload();
-			$this->$method($args);
+			call_user_func_array(array($this, $method), $args);
 			$this->postload();
 		}
 
