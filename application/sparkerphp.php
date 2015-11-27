@@ -82,12 +82,12 @@ class SparkerPHP
 			}
 			else {
 				if (__DEBUG__) $this->addMessage("No method ' $this->m_sMethod '.", 'error');
-				$this->load404();
+				$this->setView('404');
 			}
 		}
 		else {
 			if (__DEBUG__) $this->addMessage("No route ' $this->m_sRoute '.", 'error');
-			$this->load404();
+			$this->setView('404');
 		}
 	}
 
@@ -95,6 +95,14 @@ class SparkerPHP
 	 * Builds the application view object with header, footer, and view.
 	 */
 	public function loadView($page = null) {
+		// List of HTTP error codes and text
+		$sErrorPages = array(
+			'400' => 'Bad Request',
+			//'401' => 'Unauthorized', // Not using basic HTTP auth, use 403 instead
+			'403' => 'Forbidden',
+			'404' => 'Not Found',
+		);
+
 		// If called without a page, call router's view
 		if ($page == null && $this->m_pRouter)
 			$page = $this->m_pRouter->getView();
@@ -105,6 +113,11 @@ class SparkerPHP
 	        if ($this->addRequire('../views/header.php')
 	         && $this->addRequire("../views/$page.php")
 	         && $this->addRequire('../views/footer.php')) {
+			// Automatically add appropriate headers if an error page
+			if (array_key_exists($page, $sErrorPages)) {
+				header('HTTP/1.0 '.intval($page).' '.$sErrorPages[$page]);
+			}
+
 			$this->m_pView = $this->parseView('../views/header.php', $this->getData());
 			// Add all error and message boxes if in debug mode; if not, leave up to view
 			if (__DEBUG__) {
@@ -234,14 +247,6 @@ class SparkerPHP
 	public function render() {
 		$this->loadView();
 		return $this->m_pView;
-	}
-
-	/**
-	 * Load 404 page not found
-	 */
-	public function load404() {
-		header('HTTP/1.0 404 Not Found');
-                $this->loadView('404');
 	}
 }
 ?>
