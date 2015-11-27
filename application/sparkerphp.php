@@ -101,6 +101,7 @@ class SparkerPHP
 			//'401' => 'Unauthorized', // Not using basic HTTP auth, use 403 instead
 			'403' => 'Forbidden',
 			'404' => 'Not Found',
+			'503' => 'Service Unavailable',
 		);
 
 		// If called without a page, call router's view
