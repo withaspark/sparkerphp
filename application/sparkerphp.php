@@ -82,12 +82,12 @@ class SparkerPHP
 			}
 			else {
 				if (__DEBUG__) $this->addMessage("No method ' $this->m_sMethod '.", 'error');
-				$this->setView('404');
+				$this->loadView('404');
 			}
 		}
 		else {
 			if (__DEBUG__) $this->addMessage("No route ' $this->m_sRoute '.", 'error');
-			$this->setView('404');
+			$this->loadView('404');
 		}
 	}
 
